@@ -1,0 +1,43 @@
+# Let Cursor Cook
+
+A portable AI skill for Codex, Claude Code, and other external coding harnesses that can shell out to Cursor's `agent` CLI.
+
+Use it when you want the host agent to act like a manager/team lead while Cursor agents handle the technical cooking: codebase research, implementation, command execution, debugging, and code review.
+
+## Install
+
+Install with [skills.sh](https://www.skills.sh/):
+
+```bash
+npx skills add vkongv/let-cursor-cook
+```
+
+Install for specific agents:
+
+```bash
+npx skills add vkongv/let-cursor-cook -a codex -a cursor -a claude-code
+```
+
+## What It Teaches
+
+- Keep the host harness responsible for requirements, planning, user communication, and final verification.
+- Delegate technical work to Cursor CLI agents by default.
+- Use explicit Cursor chat IDs for serious orchestration.
+- Use isolated Cursor worktrees for risky or parallel implementation.
+- Use separate Cursor reviewer agents for non-trivial code changes.
+- Keep native subagents available for context hygiene and verification sidecars.
+
+## Requirements
+
+- Cursor Agent CLI available as `agent` or `cursor agent`
+- A host AI harness that can run shell commands
+
+Check Cursor Agent:
+
+```bash
+agent --help
+```
+
+## Skill
+
+The skill lives in [SKILL.md](./SKILL.md).
