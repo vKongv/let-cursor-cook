@@ -21,6 +21,7 @@ npx skills add vkongv/let-cursor-cook -a codex -a cursor -a claude-code
 ## What It Teaches
 
 - Keep the host harness responsible for requirements, planning, user communication, and final verification.
+- Keep the host harness in a manager/orchestrator role, not an implementer role.
 - Delegate technical work to Cursor CLI agents by default.
 - Use explicit Cursor chat IDs for serious orchestration.
 - Use isolated Cursor worktrees for risky or parallel implementation.
