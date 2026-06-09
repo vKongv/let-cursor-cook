@@ -33,7 +33,7 @@ Delegate technical work to Cursor agents by default because they are cheap, fast
 
 Use native subagents from the host harness mainly as context-hygiene sidecars, such as E2E verification support, log summarization, broad non-code research, or independent checks. Do not use native subagents as the primary implementation or code-review path when Cursor agents are available and performing.
 
-If Cursor fails twice to meet the manager's explicit requirements or quality bar for the same task, stop looping on Cursor and escalate to a native subagent or local host implementation path.
+If Cursor fails twice to meet the manager's explicit requirements or quality bar for the same task, stop looping on Cursor and escalate to a native subagent or local host implementation path. Before that threshold, do not patch code locally just because the fix looks small.
 
 ## Workflow
 
@@ -43,9 +43,11 @@ If Cursor fails twice to meet the manager's explicit requirements or quality bar
 4. Decide the plan as manager.
 5. Delegate implementation to one or more Cursor agents.
 6. For non-trivial work, delegate code review to a separate Cursor reviewer.
-7. Integrate or request fixes based on review findings.
+7. Send review findings that require code changes back to a Cursor implementer/fixer.
 8. Run host-owned verification/E2E using available tools.
 9. Summarize the outcome to the user.
+
+The manager may inspect diffs, judge findings, run verification, update the task ledger, and write user-facing summaries. The manager must not make code edits directly unless the user explicitly asks for host implementation or the escalation threshold is met.
 
 Prefer serial orchestration unless tasks are independent. Parallel Cursor agents are appropriate when write scopes are disjoint, research questions are independent, or competing approaches should be isolated.
 
@@ -211,14 +213,18 @@ Count a failed Cursor attempt when the agent:
 - Produces a change that fails the manager's review or tests
 - Repeats the same misunderstanding after correction
 
+Before two failed attempts, keep implementation and review-fix edits with Cursor. When a Cursor reviewer finds valid issues, send those findings to a Cursor implementer/fixer with a narrow brief. Do not patch the issues locally merely because they are small.
+
 After two failed attempts on the same task, stop sending the same work back to Cursor. Choose the smallest effective escalation:
 - Spawn a native worker/subagent from the host harness to implement the task
-- Implement the fix locally as the manager if it is small
+- Implement the fix locally as the manager only if the user explicitly allows host implementation or no suitable native worker is available
 - Split the task into smaller Cursor-owned slices only if the prior failures were caused by task size or ambiguity
 
 Before escalating, preserve the useful context: requirements, acceptance criteria, Cursor summaries, changed files, failed commands, review findings, and manager observations. The native worker or local implementation path should start from that evidence, not from another vague prompt.
 
 Still run final manager-owned verification after escalation.
+
+If the manager makes code edits before the threshold without explicit user permission, treat that as a process failure and disclose it.
 
 ## Verification
 
