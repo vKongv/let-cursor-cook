@@ -71,6 +71,8 @@ The manager may inspect diffs, judge findings, run verification, update the task
 
 Prefer serial orchestration unless tasks are independent. Parallel Cursor agents are appropriate when write scopes are disjoint, research questions are independent, or competing approaches should be isolated.
 
+When the task may need repeated attempts, use the Loop Template below instead of improvising the iteration rules.
+
 ## Delegation Briefs
 
 Give every delegated agent a compact written brief. Include:
@@ -177,6 +179,42 @@ Maintain a lightweight ledger for multi-step work. Track:
 - Open risks or questions
 
 The ledger can live in the conversation or a scratch file. Do not require a specific external tool.
+
+## Loop Template
+
+Use this template when a task may require repeated Cursor passes.
+
+Fill in the concrete values from the user request or local context:
+
+```markdown
+Goal: [observable final state]
+Max iterations: [N]
+Between iterations run as manager: [check command]
+Exit when: [precise success condition]
+```
+
+Each iteration:
+1. Delegate the next implementation or fix to Cursor with a narrow brief.
+2. Require Cursor to report files changed, commands run, results, tests, and risks.
+3. Inspect the relevant diff or files as manager.
+4. Run the check command independently as manager when available.
+5. If checks fail, send the failure output back to Cursor.
+6. If a reviewer finds valid issues, send those findings to a Cursor fixer.
+7. Stop when the exit condition passes or max iterations is reached.
+
+Anti-gaming rules:
+- Do not modify the check command or exit condition to force success.
+- Do not skip, disable, or bypass checks.
+- Do not claim success without evidence from the check command or an equivalent manager-owned verification.
+- Do not patch code locally before the escalation threshold just to finish the loop.
+
+Status cadence:
+- Give a short status update after each iteration.
+- Include iteration number, Cursor role/session, check result, and next action.
+
+Escalation:
+- After two failed Cursor attempts on the same issue, stop looping Cursor on that issue and follow the Escalation section.
+- If max iterations is reached, stop and report blockers, current state, and the next recommended path.
 
 ## Required Cursor Report Format
 
