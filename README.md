@@ -38,6 +38,18 @@ Check Cursor Agent:
 agent --help
 ```
 
+Recommended implementation command:
+
+```bash
+agent -p --trust --sandbox enabled --workspace /path/to/repo "Implement the scoped change and run relevant local tests..."
+```
+
+Use `-f` only when headless Cursor still blocks necessary local commands:
+
+```bash
+agent -p -f --trust --sandbox enabled --workspace /path/to/repo "Implement the scoped change. Allowed commands: npm test and npm run lint..."
+```
+
 ## Skill
 
 The skill lives in [SKILL.md](./SKILL.md).

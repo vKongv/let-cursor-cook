@@ -66,7 +66,9 @@ Tell Cursor agents they report to the manager, not the end user. Their output sh
 
 ## Command Patterns
 
-Use headless print mode for scriptable orchestration:
+Use headless print mode for scriptable orchestration.
+
+For read-only codebase research:
 
 ```bash
 agent -p --trust --workspace /path/to/repo "Inspect the codebase and report the likely files and implementation plan. Do not edit."
@@ -79,16 +81,30 @@ agent -p --trust --workspace /path/to/repo --mode=plan "Inspect and propose a pl
 agent -p --trust --workspace /path/to/repo --mode=ask "Review these changes for bugs. Report findings first by severity with file/line references."
 ```
 
+Use explicit sandboxing for implementation, debugging, test fixing, or any task where Cursor should run local commands:
+
+```bash
+agent -p --trust --sandbox enabled --workspace /path/to/repo "Implement the scoped change. Run relevant local tests. Report changed files, commands, results, tests, and risks."
+```
+
+If `--sandbox enabled` still blocks necessary local commands in headless mode, escalate to `-f` while keeping the sandbox enabled and the prompt tightly scoped:
+
+```bash
+agent -p -f --trust --sandbox enabled --workspace /path/to/repo "Implement the scoped change. Allowed commands: npm test and npm run lint. Do not install dependencies, run migrations, deploy, touch secrets, or edit outside the scoped files without reporting back first."
+```
+
+`-f` / `--force` means force-allow commands unless explicitly denied. `--yolo` is an alias for `--force`. Do not use `--sandbox disabled` by default.
+
 Use an isolated Cursor worktree for risky, parallel, or competing implementation:
 
 ```bash
-agent -p --trust --workspace /path/to/repo -w feature-spike "Implement the scoped change in this isolated worktree. Report changed files, commands, tests, and risks."
+agent -p --trust --sandbox enabled --workspace /path/to/repo -w feature-spike "Implement the scoped change in this isolated worktree. Run relevant local tests. Report changed files, commands, tests, and risks."
 ```
 
 Use the expanded form if the shortcut is unavailable:
 
 ```bash
-cursor agent -p --trust --workspace /path/to/repo "Implement the scoped change..."
+cursor agent -p --trust --sandbox enabled --workspace /path/to/repo "Implement the scoped change..."
 ```
 
 ## Sessions
@@ -104,7 +120,7 @@ agent create-chat
 Then resume that exact engineer thread:
 
 ```bash
-agent -p --trust --workspace /path/to/repo --resume <chatId> "Continue with the next requested fix. Report using the required format."
+agent -p --trust --sandbox enabled --workspace /path/to/repo --resume <chatId> "Continue with the next requested fix. Report using the required format."
 ```
 
 `agent -p` normal text output may not print a chat ID. Treat one-shot `agent -p` invocations as disposable unless you separately capture the session ID.
@@ -167,7 +183,9 @@ The manager decides which findings to accept.
 
 ## Guardrails
 
-Use bounded autonomy. Cursor agents may run expected local commands such as tests, builds, linters, formatters, and safe repo inspection. Require them to pause or report before:
+Use bounded autonomy. Cursor agents may run expected local commands such as tests, builds, linters, formatters, and safe repo inspection. Prefer `--sandbox enabled` for autonomous local command execution. Use `-f` only when required for headless execution, and keep the prompt explicit about allowed commands and write scope.
+
+Require Cursor agents to pause or report before:
 - Destructive actions
 - Production deploys
 - Secret handling
