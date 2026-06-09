@@ -31,7 +31,9 @@ Delegate technical work to Cursor agents by default because they are cheap, fast
 - Test fixing
 - Code review
 
-Use native subagents from the host harness only as context-hygiene sidecars, such as E2E verification support, log summarization, broad non-code research, or independent checks. Do not use native subagents as the primary implementation or code-review path when Cursor agents are available.
+Use native subagents from the host harness mainly as context-hygiene sidecars, such as E2E verification support, log summarization, broad non-code research, or independent checks. Do not use native subagents as the primary implementation or code-review path when Cursor agents are available and performing.
+
+If Cursor fails twice to meet the manager's explicit requirements or quality bar for the same task, stop looping on Cursor and escalate to a native subagent or local host implementation path.
 
 ## Workflow
 
@@ -197,6 +199,26 @@ Require Cursor agents to pause or report before:
 Do not delegate final acceptance, final E2E signoff, secret handling, production deploys, or irreversible destructive actions.
 
 When agents disagree, reduce the conflict to evidence: inspect the code, run targeted tests, ask a focused follow-up if useful, then make the call as manager. Do not average opinions or defer to confidence.
+
+## Escalation
+
+Cursor is the default technical delegate, but do not loop forever.
+
+Count a failed Cursor attempt when the agent:
+- Ignores explicit acceptance criteria
+- Edits outside the assigned scope
+- Cannot run or explain required verification
+- Produces a change that fails the manager's review or tests
+- Repeats the same misunderstanding after correction
+
+After two failed attempts on the same task, stop sending the same work back to Cursor. Choose the smallest effective escalation:
+- Spawn a native worker/subagent from the host harness to implement the task
+- Implement the fix locally as the manager if it is small
+- Split the task into smaller Cursor-owned slices only if the prior failures were caused by task size or ambiguity
+
+Before escalating, preserve the useful context: requirements, acceptance criteria, Cursor summaries, changed files, failed commands, review findings, and manager observations. The native worker or local implementation path should start from that evidence, not from another vague prompt.
+
+Still run final manager-owned verification after escalation.
 
 ## Verification
 

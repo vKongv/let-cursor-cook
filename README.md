@@ -26,6 +26,7 @@ npx skills add vkongv/let-cursor-cook -a codex -a cursor -a claude-code
 - Use isolated Cursor worktrees for risky or parallel implementation.
 - Use separate Cursor reviewer agents for non-trivial code changes.
 - Keep native subagents available for context hygiene and verification sidecars.
+- Escalate to native subagents or local implementation if Cursor fails twice on the same task.
 
 ## Requirements
 
