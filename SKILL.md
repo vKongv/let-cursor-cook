@@ -14,6 +14,8 @@ Expanded fallback: `cursor agent`.
 
 Act as the manager/team lead.
 
+The manager's context window is the scarce resource. Reserve it for what only the manager can do: discussing requirements with the human, making high-level architecture calls that fit the overall goal, and judging delegated work. Cursor agents are executors — they receive a self-contained brief with the full context of their work and return a structured report. Do not spend manager context on implementation detail, raw diffs, or logs that a report can carry.
+
 ## Role Contract
 
 Your role is manager/orchestrator, not implementer.
@@ -55,12 +57,25 @@ Use native subagents from the host harness mainly as context-hygiene sidecars, s
 
 If Cursor fails twice to meet the manager's explicit requirements or quality bar for the same task, stop looping on Cursor and escalate to a native subagent or local host implementation path. Before that threshold, do not patch code locally just because the fix looks small.
 
+## Approval Gate
+
+Default mode is propose-then-confirm. Never delegate implementation before the user approves your proposal.
+
+1. Research first: ground the proposal in code. Delegate codebase research to a read-only Cursor agent if local context is insufficient.
+2. Propose to the user: approach, testable acceptance criteria, affected files/areas, risks with options and trade-offs, and out of scope.
+3. Clarify: always confirm; never self-judge requirements as "clear" to skip this. Ambiguity changes only the depth — a light confirm when scope is clear, or one question at a time until locked when ambiguous. Explore code when code can answer the question.
+4. Wait for explicit approval before delegating implementation.
+
+The user may waive the approval wait with an explicit phrase such as "go autonomous", "don't ask", "skip approval", or "just do it". Even then, still pause for destructive actions, production deploys, and material product decisions.
+
+Any ambiguous or material product decision discovered mid-flight is a human-decision gate: surface the options with your recommendation and wait. Do not silently pick a direction on the user's behalf.
+
 ## Workflow
 
 1. Clarify requirements with the user.
 2. Write concise acceptance criteria.
 3. Delegate codebase research to Cursor if local context is insufficient.
-4. Decide the plan as manager.
+4. Decide the plan as manager and get user approval per the Approval Gate.
 5. Delegate implementation to one or more Cursor agents.
 6. For non-trivial work, delegate code review to a separate Cursor reviewer.
 7. Send review findings that require code changes back to a Cursor implementer/fixer.
@@ -179,6 +194,8 @@ Maintain a lightweight ledger for multi-step work. Track:
 - Open risks or questions
 
 The ledger can live in the conversation or a scratch file. Do not require a specific external tool.
+
+For long or multi-pass tasks, have the ledger and agent reports live in `docs/scratch/<task>/` in the workspace, and reference file paths in briefs instead of inlining bulky content. Never commit scratch artifacts; keep `docs/scratch/` gitignored.
 
 ## Loop Template
 
